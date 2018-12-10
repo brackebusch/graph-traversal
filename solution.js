@@ -178,22 +178,28 @@ function getNeighbors(location, graph){
   const col = location[1]
   const neighbors = []
 
+    //need to check for three things:
+    //1) that the row/col exits
+    //2) that the location exits
+    //3) that the location is not an X
+
   //top is move up a row, hence row-1
-  if(row - 1 > -1 && graph[row - 1][col] !== 'X'){
+  if(typeof graph[row-1] !== "undefined" && typeof graph[row - 1][col] !== "undefined" && graph[row - 1][col] !== 'X'){
       neighbors.push([row - 1, col])
   }
   //down is move down a row, hence row+1
-  if(typeof graph[row + 1] !== "undefined" && graph[row + 1][col] !== 'X'){
+  if(typeof graph[row + 1] !== "undefined" &&  typeof graph[row + 1][col] !== "undefined" && graph[row + 1][col] !== 'X'){
     neighbors.push([row + 1, col])
   }
   //left move col over
-  if(col - 1 > -1 && graph[row][col - 1] !== 'X'){
+  if(typeof graph[row][col-1] !== "undefined" && graph[row][col - 1] !== 'X'){
       neighbors.push([row, col - 1])
   }
-  //right move col over
+  //right
   if(typeof graph[row][col+1] !== "undefined" && graph[row][col+1] !== 'X'){
       neighbors.push([row, col + 1])
   }
 
   return neighbors
 }
+
