@@ -27,7 +27,7 @@ function solution(S) {
 
 class Node {
   constructor(location, end, previousDistance){
-      this.location = location //[x,y] coordinate
+      this.location = location //[row,col] coordinate
       this.distanceFromTarget = this.distance(location, end)
       this.distanceTraveled = previousDistance + 1
       this.cost = this.distanceTraveled + this.distanceFromTarget
@@ -43,7 +43,6 @@ class Node {
 class Heap {
   constructor() {
       this.data = []
-      this.set = new Set()
   }
 
   push(el) {
@@ -73,6 +72,7 @@ class Heap {
     return this.data[0]
   }
 
+  //moves node up the heap until it satisfies min-heap rules 
   heapifyUp(childIndex) {
       if(childIndex === 0){
           return //no parent
@@ -82,12 +82,13 @@ class Heap {
 
       //this will prioritize new nodes, aka depth first search, in case of tie
       if (this.data[childIndex].cost <= this.data[parentIndex].cost){
-          //swap with parent
+          //swap with larger parent
           this.swap(parentIndex, childIndex)
           this.heapifyUp(parentIndex)
       }
   }
 
+  //moves node down the heap until it satisfies min-heap rules 
   heapifyDown(parentIndex) {
       let smallerChildIndex
 
@@ -119,12 +120,12 @@ class Heap {
 
 function findFastest(start, end, graph){
   if(start === null || end === null){
-      return(-2)   
+    console.log('no start or end');
+    return(-2)   
   }
-  //need to remember all nodes visited
-  //also need to keep track of all nodes which are waiting to be visited
-  const nodeHeap = new Heap() //priority queue for handling locaitons to visit
-  const inNodeHeap = {} //hash pointing to nodes, key is node location 'row,col' and value will point to the node object
+
+  const nodeHeap = new Heap() //priority queue for handling locations to visit
+  const inNodeHeap = {} //hash pointing to nodes, key is node location 'row,col' and value will point to the node object for reference to it's index should it need to be updated
   const processed = new Set() //nodes we have seen in the heap, so they are not revisited
  
   let startNode = new Node(start, end, -1)
@@ -142,7 +143,7 @@ function findFastest(start, end, graph){
         console.log(next.cost)
         return next.cost //this is the final node
       } else {
-          //get each neighbor and add it to toBeProcessed
+          //get each neighbor and add it to nodeHeap
           const neighbors = getNeighbors(next.location, graph)
           for(let i = 0; i < neighbors.length; i++){
               const row = neighbors[i][0]
